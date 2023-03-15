@@ -49,3 +49,35 @@ function createNewNotes(body, notesArray) {
     );
     return newNote;
 }
+
+// The POST mehtod used to bring it to the backend 
+app.post("/api/notes", (req, res) => {
+    const newNote = createNewNotes(req.body, notesData);
+    res.json(newNote);
+});
+
+// Delete previous note funtion 
+function deleteExistingNotes(id, notesArray) {
+    for (let i= 0; i < notesArray.length; i++) {
+        let note = notesArray[i];
+
+        if (note.id == id) {
+            notesArray.splice(i, 1);
+            fs.writeFileSync(
+            path.join(__dirname, './db/db.json'),
+            JSON.stringify(notesArray, null, 2)
+            );
+            break;
+        }
+    }
+}
+
+app.delete('/api/notes/:id', (req, res) => {
+    deleteExistingNotes(req.params.id, notesData);
+    res.json(true);
+});
+
+// Add Listener
+app.listen(PORT, () => {
+    console.log(`The server is listening on port: ${PORT}`);
+});
