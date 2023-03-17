@@ -93,6 +93,7 @@ const fs = require("fs");
 const PORT = process.env.PORT || 3001;
 
 const noteData = require("./db/db.json");
+const { response } = require("express");
 
 const app = express();
 
@@ -114,28 +115,31 @@ app.listen(PORT, () => {
   console.log(`The server is listening on PORT: ${PORT}`);
 });
 
-// Function to save new notes
-function createNewNotes(body, notesArray) {
-    const newNote = body;
-    if (!Array.isArray(notesArray))
-    notesArray = [];
 
-    if (notesArray.length === 0)
-    notesArray.push(0);
-
-    body.id = notesArray[0];
-    notesArray[0]++;
-
-    notesArray.push(newNote);
-    fs.writeFileSync(
-        path.join(__dirname, './db/db.json'),
-        JSON.stringify(notesArray, null, 2)
-    );
-    return newNote;
-}
-
-// The POST mehtod used to bring it to the backend
-app.post("/api/notes", (req, res) => {
-    const newNote = createNewNotes(req.body, notesData);
+app.post("/apinotes", (req, res) => {
+  const newNote = req.body;
+  newNote.id = Date.now().toString():
+  noteData.push(newNote);
+  fs.writeFile("./db/db.json", JSON.stringify(noteData), (err) => {
+    if (err) throw err;
     res.json(newNote);
+  });
 });
+
+document.getElementById("save-note").addEventListener("click", function(event))
+event.preventDefault();
+const noteTitle = document.getElementById("note-title").value; 
+const noteText = document.getElementById("note-text").value; 
+const newNote = { title: noteTitle, Text: noteText };
+fetch("/api/notes", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(newNote)
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data);
+})
+.catch(error => console.error(error));
