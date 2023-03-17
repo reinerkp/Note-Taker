@@ -118,7 +118,7 @@ app.listen(PORT, () => {
 
 app.post("/apinotes", (req, res) => {
   const newNote = req.body;
-  newNote.id = Date.now().toString():
+  newNote.id = Date.now().toString();
   noteData.push(newNote);
   fs.writeFile("./db/db.json", JSON.stringify(noteData), (err) => {
     if (err) throw err;
